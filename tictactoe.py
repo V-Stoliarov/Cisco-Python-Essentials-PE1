@@ -11,8 +11,6 @@ Nboard =[
 ]
 
 
-
-
 def display_board(board):
     print(hor_line)
     for i in range(3):
@@ -43,6 +41,7 @@ def enter_move(board):
             else:
                 print("The field",player_move,"is already occupied!")
                 continue
+    display_board(board)
     victory_for(board,"O")
     # The function accepts the board's current status, asks the user about their move, 
     # checks the input, and updates the board according to the user's decision.
@@ -74,11 +73,11 @@ def victory_for(board, sign):
        (board[2][0] == sign and board[2][1] == sign and board[2][2] == sign) or \
        (board[0][0] == sign and board[1][1] == sign and board[2][2] == sign) or \
        (board[0][2] == sign and board[1][1] == sign and board[2][0] == sign):
-        print(sign,"won")
+        print(sign,"won!")
         end_of_game = False
         return
     elif len(free_fields) == 0:
-        print("No one won")
+        print("No one won.")
         end_of_game = False
         return
     # The function analyzes the board's status in order to check if 
@@ -97,6 +96,7 @@ def draw_move(board):
                 field_is_free = False
                 make_list_of_free_fields(board)
                 break
+    display_board(board)
     victory_for(board,"X") 
 
             
@@ -105,12 +105,11 @@ display_board(Nboard)
 while end_of_game:
     make_list_of_free_fields(Nboard)
     enter_move(Nboard)
-    display_board(Nboard)
     if end_of_game == False:
         break
     print("The move of X:")
     draw_move(Nboard)
-    display_board(Nboard)
+
 
 
 
