@@ -25,12 +25,24 @@ def display_board(board):
 
 
 def enter_move(board):
-    make_list_of_free_fields(Nboard)
-    if len(free_fields) == 0:
-        victory_for(board,"O")
-        return
-    else:
-        return
+    field_is_free = True
+    while field_is_free:
+        field_is_free = True
+        player_move = int(input("Enter a number from 1 to 9:" ))
+        if 1 < player_move or player_move > 9:
+            print()
+            continue
+        else:
+            for item in free_fields:
+                if board[item[0]][item[1]] == player_move:
+                    board[item[0]][item[1]] = "O"
+                    field_is_free = False
+                    make_list_of_free_fields(board)
+                    break
+            else:
+                print("The field",player_move,"is already occupied!")
+                continue
+    victory_for(board,"O")
     # The function accepts the board's current status, asks the user about their move, 
     # checks the input, and updates the board according to the user's decision.
 
@@ -48,16 +60,11 @@ def make_list_of_free_fields(board):
     return free_fields
     # The function browses the board and builds a list of all the free squares; 
     # the list consists of tuples, while each tuple is a pair of row and column numbers.
-"""
-         board[0][0] == sign and board[1][0] == sign and board[2][0] == sign or \
-         board[0][1] == sign and board[1][1] == sign and board[2][1] == sign or \
-         board[0][2] == sign and board[1][2] == sign and board[2][2] == sign or \
-         board[0][0] == sign and board[1][1] == sign and board[2][2] == sign or \
-         board[0][2] == sign and board[1][1] == sign and board[2][2] == sign
-"""
+
 def victory_for(board, sign):
     global end_of_game
-
+    make_list_of_free_fields(Nboard)
+    # temporary bruteforce approach for win condition
     if (board[0][0] == sign and board[1][0] == sign and board[2][0] == sign) or \
          (board[0][1] == sign and board[1][1] == sign and board[2][1] == sign) or \
          (board[0][2] == sign and board[1][2] == sign and board[2][2] == sign) or \
@@ -76,12 +83,8 @@ def victory_for(board, sign):
 
 def draw_move(board):
     make_list_of_free_fields(Nboard)
-    if len(free_fields) == 0:
-        victory_for(board,"X")
-        return
     field_is_free = True
     while field_is_free:
-        count = 0
         field_is_free = True
         comp_move = str(randrange(1,10))
         for item in free_fields:
@@ -98,6 +101,7 @@ def draw_move(board):
 while end_of_game:
     make_list_of_free_fields(Nboard)
     enter_move(Nboard)
+    display_board(Nboard)
     draw_move(Nboard)
     display_board(Nboard)
 
