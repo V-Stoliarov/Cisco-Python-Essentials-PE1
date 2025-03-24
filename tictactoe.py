@@ -25,12 +25,13 @@ def display_board(board):
 
 
 def enter_move(board):
+    victory_for(board,"O")
     field_is_free = True
     while field_is_free:
         field_is_free = True
-        player_move = int(input("Enter a number from 1 to 9:" ))
-        if 1 < player_move or player_move > 9:
-            print()
+        player_move = input("Enter a number from 1 to 9: " )
+        if int(player_move) < 1 or int(player_move) > 9:
+            print("You entered incorrect value! Try again.")
             continue
         else:
             for item in free_fields:
@@ -66,10 +67,13 @@ def victory_for(board, sign):
     make_list_of_free_fields(Nboard)
     # temporary bruteforce approach for win condition
     if (board[0][0] == sign and board[1][0] == sign and board[2][0] == sign) or \
-         (board[0][1] == sign and board[1][1] == sign and board[2][1] == sign) or \
-         (board[0][2] == sign and board[1][2] == sign and board[2][2] == sign) or \
-         (board[0][0] == sign and board[1][1] == sign and board[2][2] == sign) or \
-         (board[0][2] == sign and board[1][1] == sign and board[2][2] == sign):
+       (board[0][1] == sign and board[1][1] == sign and board[2][1] == sign) or \
+       (board[0][2] == sign and board[1][2] == sign and board[2][2] == sign) or \
+       (board[0][0] == sign and board[0][1] == sign and board[0][2] == sign) or \
+       (board[1][0] == sign and board[1][1] == sign and board[1][2] == sign) or \
+       (board[2][0] == sign and board[2][1] == sign and board[2][2] == sign) or \
+       (board[0][0] == sign and board[1][1] == sign and board[2][2] == sign) or \
+       (board[0][2] == sign and board[1][1] == sign and board[2][0] == sign):
         print(sign,"won")
         end_of_game = False
         return
@@ -82,7 +86,7 @@ def victory_for(board, sign):
 
 
 def draw_move(board):
-    make_list_of_free_fields(Nboard)
+    victory_for(board,"O")
     field_is_free = True
     while field_is_free:
         field_is_free = True
@@ -91,17 +95,20 @@ def draw_move(board):
             if board[item[0]][item[1]] == comp_move:
                 board[item[0]][item[1]] = "X"
                 field_is_free = False
-                make_list_of_free_fields(Nboard)
+                make_list_of_free_fields(board)
                 break
     victory_for(board,"X") 
 
             
 
-            
+display_board(Nboard)            
 while end_of_game:
     make_list_of_free_fields(Nboard)
     enter_move(Nboard)
     display_board(Nboard)
+    if end_of_game == False:
+        break
+    print("The move of X:")
     draw_move(Nboard)
     display_board(Nboard)
 
