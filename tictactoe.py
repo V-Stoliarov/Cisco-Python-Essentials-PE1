@@ -3,7 +3,7 @@ from random import randrange
 hor_line = "+-------+-------+-------+"
 ver_lines ="|       |       |       |"
 div = "  |  "
-end_of_game = True
+end_of_game = False
 Nboard =[
         ["1","2","3"],
         ["4","X","6"],
@@ -21,28 +21,28 @@ def display_board(board):
     # The function accepts one parameter containing the board's current status
     # and prints it out to the console.
 
-
 def enter_move(board):
-    victory_for(board,"O")
-    field_is_free = True
-    while field_is_free:
-        field_is_free = True
-        player_move = input("Enter a number from 1 to 9: " )
-        if int(player_move) < 1 or int(player_move) > 9:
-            print("You entered incorrect value! Try again.")
-            continue
-        else:
-            for item in free_fields:
-                if board[item[0]][item[1]] == player_move:
-                    board[item[0]][item[1]] = "O"
-                    field_is_free = False
-                    make_list_of_free_fields(board)
-                    break
-            else:
-                print("The field",player_move,"is already occupied!")
+    make_list_of_free_fields(board)
+    while True: # loop until player chooses free field. There is no need to check if there is an empty field because "victory_for()" already does that after each turn
+        
+        while True: # loop for input validation
+            try:
+                player_move = int(input("Enter a number from 1 to 9: " ))
+            except ValueError:
+                print("You entered incorrect value! Try again.")
                 continue
-    display_board(board)
-    victory_for(board,"O")
+            if player_move > 0 and player_move < 10:
+                break
+                
+        for item in free_fields: # check if the field entered by player is free
+            if board[item[0]][item[1]] == str(player_move):
+                board[item[0]][item[1]] = "O"
+                make_list_of_free_fields(board)
+                return # free field was found and assigned, exit the function
+        else:
+            print("The field",player_move,"is already occupied!") 
+            # restart the entire loop
+        
     # The function accepts the board's current status, asks the user about their move, 
     # checks the input, and updates the board according to the user's decision.
 
@@ -63,52 +63,51 @@ def make_list_of_free_fields(board):
 
 def victory_for(board, sign):
     global end_of_game
-    make_list_of_free_fields(Nboard)
-    # temporary bruteforce approach for win condition
-    if (board[0][0] == sign and board[1][0] == sign and board[2][0] == sign) or \
-       (board[0][1] == sign and board[1][1] == sign and board[2][1] == sign) or \
-       (board[0][2] == sign and board[1][2] == sign and board[2][2] == sign) or \
-       (board[0][0] == sign and board[0][1] == sign and board[0][2] == sign) or \
-       (board[1][0] == sign and board[1][1] == sign and board[1][2] == sign) or \
-       (board[2][0] == sign and board[2][1] == sign and board[2][2] == sign) or \
-       (board[0][0] == sign and board[1][1] == sign and board[2][2] == sign) or \
-       (board[0][2] == sign and board[1][1] == sign and board[2][0] == sign):
-        print(sign,"won!")
-        end_of_game = False
-        return
-    elif len(free_fields) == 0:
+    make_list_of_free_fields(board)
+    # I don't know how to make code for checking win conditions less bulky :c
+    for i in range(3):
+        if (board[0][i] + board[1][i] + board[2][i] == sign*3) or\
+           (board[i][0] + board[i][1] + board[i][2] == sign*3):    # checking horisontal and vertical lines
+            print(sign,"won!")
+            end_of_game = True
+            return
+    if (board[0][0] + board[1][1] + board[2][2] == sign*3) or \
+       (board[0][2] + board[1][1] + board[2][0] == sign*3):    # checking both diagonals
+           print(sign,"won!")
+           end_of_game = True
+           return
+    if len(free_fields) == 0:
         print("No one won.")
-        end_of_game = False
+        end_of_game = True
         return
     # The function analyzes the board's status in order to check if 
     # the player using 'O's or 'X's has won the game
 
 
 def draw_move(board):
-    victory_for(board,"O")
-    field_is_free = True
-    while field_is_free:
-        field_is_free = True
+    make_list_of_free_fields(board)
+    while True: # loop until randomizer chooses a free field
         comp_move = str(randrange(1,10))
-        for item in free_fields:
+        for item in free_fields: # checking if the field picked by randomizer is free 
             if board[item[0]][item[1]] == comp_move:
                 board[item[0]][item[1]] = "X"
-                field_is_free = False
                 make_list_of_free_fields(board)
-                break
-    display_board(board)
-    victory_for(board,"X") 
+                return
+    # restart the main loop if the field is already occupied
+     
 
             
-
 display_board(Nboard)            
-while end_of_game:
-    make_list_of_free_fields(Nboard)
+while end_of_game == False: 
     enter_move(Nboard)
-    if end_of_game == False:
+    display_board(Nboard)
+    victory_for(Nboard,"O")
+    if end_of_game == True:
         break
     print("The move of X:")
     draw_move(Nboard)
+    display_board(Nboard)
+    victory_for(Nboard,"X")
 
 
 
